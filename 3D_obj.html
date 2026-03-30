@@ -1,0 +1,238 @@
+<!-- CIRCUIT INTERACTIVE — paste this inside your #circuito section, replacing the image div -->
+<div 
+  id="circuit-viewer" 
+  class="relative overflow-hidden rounded-xl cursor-crosshair"
+  style="border:1px solid rgba(27,152,196,0.2);aspect-ratio:1.2/1"
+  onmousemove="parallax(event)"
+  onmouseleave="resetParallax()"
+>
+  <!-- Base image -->
+  <img 
+    id="circuit-img"
+    src="pics/look into real life ciruit .png" 
+    alt="EV Guardian — Circuito Real" 
+    class="w-full h-full object-cover transition-transform duration-100"
+    style="transform-origin:center;will-change:transform"
+  >
+
+  <!-- Dark overlay -->
+  <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(to top,rgba(3,26,57,0.5),transparent 60%)"></div>
+
+  <!-- HOTSPOTS -->
+
+  <!-- Arduino -->
+  <div class="hotspot" style="left:45%;top:68%" onclick="showTooltip('arduino')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- LCD -->
+  <div class="hotspot" style="left:50%;top:22%" onclick="showTooltip('lcd')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- LEDs -->
+  <div class="hotspot" style="left:50%;top:8%" onclick="showTooltip('leds')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- Buzzer -->
+  <div class="hotspot" style="left:72%;top:18%" onclick="showTooltip('buzzer')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- Motor fan -->
+  <div class="hotspot" style="left:20%;top:58%" onclick="showTooltip('fan')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- Motor pump -->
+  <div class="hotspot" style="left:82%;top:38%" onclick="showTooltip('pump')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- Servo -->
+  <div class="hotspot" style="left:10%;top:22%" onclick="showTooltip('servo')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- 9V Battery -->
+  <div class="hotspot" style="left:85%;top:72%" onclick="showTooltip('battery')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- Relay -->
+  <div class="hotspot" style="left:72%;top:72%" onclick="showTooltip('relay')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- Transistors -->
+  <div class="hotspot" style="left:30%;top:38%" onclick="showTooltip('transistor')">
+    <div class="hotspot-ring"></div>
+    <div class="hotspot-dot"></div>
+  </div>
+
+  <!-- TOOLTIP -->
+  <div id="tooltip" class="absolute pointer-events-none opacity-0 transition-opacity duration-300 z-20" style="max-width:220px">
+    <div class="glass rounded-xl p-4" style="border:1px solid rgba(27,152,196,0.3)">
+      <div class="flex items-center gap-2 mb-2">
+        <span id="tooltip-icon" class="w-2 h-2 rounded-full bg-b3 pulse-glow shrink-0"></span>
+        <span id="tooltip-title" class="text-xs font-mono-custom tracking-wider uppercase text-b6"></span>
+      </div>
+      <p id="tooltip-desc" class="text-xs font-light leading-relaxed" style="color:rgba(193,241,251,0.7)"></p>
+      <p id="tooltip-pin" class="text-xs font-mono-custom mt-2" style="color:rgba(27,152,196,0.8)"></p>
+    </div>
+  </div>
+
+  <!-- Bottom badge -->
+  <div class="absolute bottom-4 left-4 right-4 pointer-events-none">
+    <div class="glass rounded-xl px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="w-2 h-2 rounded-full bg-b3 pulse-glow shrink-0"></span>
+        <span class="text-xs font-mono-custom tracking-wider uppercase text-b5">EV Guardian — Prototipo Tinkercad v2.0</span>
+      </div>
+      <span class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.4)">Toca los puntos</span>
+    </div>
+  </div>
+</div>
+
+<style>
+.hotspot {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 10;
+}
+.hotspot-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(27,152,196,0.6);
+  animation: hotspot-pulse 2s ease-in-out infinite;
+}
+.hotspot-dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #1B98C4;
+  box-shadow: 0 0 8px rgba(27,152,196,0.8);
+}
+.hotspot:hover .hotspot-ring {
+  border-color: rgba(84,182,133,0.9);
+  animation: none;
+}
+.hotspot:hover .hotspot-dot {
+  background: #54B685;
+  box-shadow: 0 0 12px rgba(84,182,133,0.9);
+}
+@keyframes hotspot-pulse {
+  0%,100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.5); opacity: 0; }
+}
+</style>
+
+<script>
+const tooltipData = {
+  arduino: {
+    title: "Arduino Uno R3",
+    desc: "El cerebro del sistema. Lee la temperatura cada 100ms y controla todos los actuadores en tiempo real.",
+    pin: "Pins: A0, A1, A2, D2–D7, D11"
+  },
+  lcd: {
+    title: "LCD 16x2 I2C",
+    desc: "Muestra temperatura en tiempo real y estado del sistema. Protocolo PCF8574 dirección 0x20.",
+    pin: "Pins: SDA (A4) / SCL (A5)"
+  },
+  leds: {
+    title: "LEDs de Estado",
+    desc: "Verde = Normal. Amarillo = Warning, cooling activo. Rojo parpadeante = Critical, corte de batería.",
+    pin: "Pins: D2 (verde) D3 (amarillo) D4 (rojo)"
+  },
+  buzzer: {
+    title: "Piezo Buzzer",
+    desc: "Alarma acústica. Intermitente en Warning (800Hz), continua en Critical (1200Hz).",
+    pin: "Pin: D7"
+  },
+  fan: {
+    title: "Motor DC #1 — Ventilador",
+    desc: "Ventilador de enfriamiento principal. Arranca suave desde boot y escala con PWM según temperatura.",
+    pin: "Pin: D5 (PWM) via NPN"
+  },
+  pump: {
+    title: "Motor DC #2 — Bomba",
+    desc: "Simula bomba de refrigeración líquida. Activa en todo momento — nunca se detiene completamente.",
+    pin: "Pin: A1 (PWM) via NPN"
+  },
+  servo: {
+    title: "Micro Servo — Flap",
+    desc: "Controla la apertura del flap de ventilación. 0° en reposo, 110° en estado crítico.",
+    pin: "Pin: D6 (PWM)"
+  },
+  battery: {
+    title: "Batería 9V",
+    desc: "Simula el paquete de baterías del vehículo eléctrico. El relay la desconecta en estado crítico.",
+    pin: "Conectada al COM del relay SPDT"
+  },
+  relay: {
+    title: "Relay SPDT — Kill-Safe",
+    desc: "Protocolo de corte. HIGH = batería conectada. LOW = aislamiento inmediato en estado crítico.",
+    pin: "Pin: D11 via NPN transistor"
+  },
+  transistor: {
+    title: "Transistores NPN",
+    desc: "Actúan como interruptores de potencia. Protegen los pines Arduino de sobrecorriente en motores y relay.",
+    pin: "Base via resistencia 1kΩ"
+  }
+};
+
+function showTooltip(key) {
+  const data = tooltipData[key];
+  const tooltip = document.getElementById('tooltip');
+  document.getElementById('tooltip-title').textContent = data.title;
+  document.getElementById('tooltip-desc').textContent = data.desc;
+  document.getElementById('tooltip-pin').textContent = data.pin;
+
+  const hotspot = document.querySelector(`.hotspot[onclick="showTooltip('${key}')"]`);
+  const viewer = document.getElementById('circuit-viewer');
+  const vRect = viewer.getBoundingClientRect();
+  const hRect = hotspot.getBoundingClientRect();
+
+  let left = hRect.left - vRect.left + 20;
+  let top = hRect.top - vRect.top - 10;
+
+  if (left + 240 > vRect.width) left = left - 260;
+  if (top + 160 > vRect.height) top = top - 140;
+  if (top < 0) top = 10;
+
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+  tooltip.style.opacity = '1';
+
+  setTimeout(() => { tooltip.style.opacity = '0'; }, 3500);
+}
+
+function parallax(e) {
+  const viewer = document.getElementById('circuit-viewer');
+  const img = document.getElementById('circuit-img');
+  const rect = viewer.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width - 0.5;
+  const y = (e.clientY - rect.top) / rect.height - 0.5;
+  img.style.transform = `scale(1.06) translate(${x * -12}px, ${y * -12}px)`;
+}
+
+function resetParallax() {
+  document.getElementById('circuit-img').style.transform = 'scale(1) translate(0,0)';
+}
+</script>
