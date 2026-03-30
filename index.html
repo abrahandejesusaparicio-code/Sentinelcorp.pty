@@ -342,6 +342,83 @@
   </div>
 </section>
 
+<!-- CIRCUITO REAL -->
+<section class="relative py-32 overflow-hidden" style="background:#1F292B">
+  <div class="absolute inset-0 grid-bg opacity-20"></div>
+  <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(27,152,196,0.3),transparent)"></div>
+  <div class="absolute top-1/2 left-0 w-80 h-80 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(20,103,143,0.08),transparent 70%)"></div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="reveal flex items-center gap-4 mb-8">
+      <span class="w-12 h-px bg-b6"></span>
+      <span class="text-xs font-mono-custom tracking-widest uppercase text-b6">Hardware Real</span>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- Text side -->
+      <div class="reveal-left">
+        <h2 class="font-display font-light leading-tight mb-6" style="font-family:'Cormorant Garamond',serif">
+          <span class="block text-5xl md:text-6xl text-a4">El Circuito</span>
+          <span class="block text-5xl md:text-6xl font-semibold text-grad-tech">en la Realidad</span>
+        </h2>
+        <div class="relative mb-8 pl-6" style="border-left:2px solid rgba(27,152,196,0.35)">
+          <p class="text-lg font-display font-light italic leading-relaxed" style="font-family:'Cormorant Garamond',serif;color:rgba(193,241,251,0.75)">"Del simulador al breadboard — cada componente cumple una función crítica en la cadena de protección térmica."</p>
+          <p class="text-sm text-b6 font-mono-custom mt-3">— Sentinel Corp Engineering</p>
+        </div>
+        <div class="space-y-4 text-sm font-light leading-relaxed mb-8" style="color:rgba(193,241,251,0.6)">
+          <p>El prototipo físico del EV Guardian implementa todos los subsistemas de protección sobre una arquitectura Arduino Uno R3, conectando sensórica de precisión, actuadores de disipación y protocolo Kill-Safe en un único circuito integrado.</p>
+          <p>Cada componente fue seleccionado y validado bajo los mismos criterios de seguridad funcional que rigen el diseño embebido de nivel industrial.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="glass rounded-xl p-4">
+            <p class="text-xs font-mono-custom tracking-wider uppercase text-b6 mb-1">Componentes</p>
+            <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">15+</p>
+            <p class="text-xs font-light" style="color:rgba(193,241,251,0.4)">Activos integrados</p>
+          </div>
+          <div class="glass rounded-xl p-4">
+            <p class="text-xs font-mono-custom tracking-wider uppercase text-b6 mb-1">Conexiones</p>
+            <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">38</p>
+            <p class="text-xs font-light" style="color:rgba(193,241,251,0.4)">Cables documentados</p>
+          </div>
+          <div class="glass rounded-xl p-4">
+            <p class="text-xs font-mono-custom tracking-wider uppercase text-b6 mb-1">Protocolo</p>
+            <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">Kill-Safe</p>
+            <p class="text-xs font-light" style="color:rgba(193,241,251,0.4)">Corte automático</p>
+          </div>
+          <div class="glass rounded-xl p-4">
+            <p class="text-xs font-mono-custom tracking-wider uppercase text-b6 mb-1">Plataforma</p>
+            <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">Tinkercad</p>
+            <p class="text-xs font-light" style="color:rgba(193,241,251,0.4)">Simulado y validado</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image side -->
+      <div class="reveal-right">
+        <div class="relative">
+          <div class="absolute -inset-4 rounded-2xl" style="border:1px solid rgba(27,152,196,0.15)"></div>
+          <div class="absolute -inset-8 rounded-3xl" style="border:1px solid rgba(20,103,143,0.08)"></div>
+          <div class="relative rounded-xl overflow-hidden" style="border:1px solid rgba(27,152,196,0.2)">
+            <img 
+              src="pics/look into real life ciruit .png" 
+              alt="EV Guardian — Circuito Real" 
+              class="w-full h-full object-cover"
+              onerror="this.parentElement.style.background='#031A39';this.style.display='none'"
+            >
+            <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(to top,rgba(3,26,57,0.6),transparent 60%)"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <div class="glass rounded-xl px-4 py-3 flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-b3 pulse-glow shrink-0"></span>
+                <span class="text-xs font-mono-custom tracking-wider uppercase text-b5">EV Guardian — Prototipo Tinkercad v2.0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 <!-- METODOLOGÍA -->
 <section id="methodology" class="relative py-32 overflow-hidden" style="background:#1F292B">
   <div class="absolute inset-0 grid-bg opacity-12"></div>
@@ -624,5 +701,16 @@
   );
   document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
 </script>
+<!-- BACK TO TOP -->
+<button 
+  onclick="window.scrollTo({top:0,behavior:'smooth'})" 
+  class="fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full glass flex items-center justify-center hover:scale-110 transition-all duration-300 group"
+  style="border:1px solid rgba(27,152,196,0.3);background:rgba(20,103,143,0.2);backdrop-filter:blur(12px)"
+>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2" class="group-hover:stroke-b5 transition-colors">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+</button>
+
 </body>
 </html>
