@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EV Guardian — Circuito Interactivo | Sentinel Corp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            a1:'#2E393F', a2:'#3DA04B', a3:'#C9ECCE', a4:'#FEFEFC', a5:'#33713F', a6:'#133720',
+            b1:'#1F292B', b2:'#031A39', b3:'#54B685', b4:'#14678F', b5:'#C1F1FB', b6:'#1B98C4',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #0a1628; color: #FEFEFC; font-family: 'DM Sans', sans-serif; overflow-x: hidden; min-height: 100vh; }
+    .font-display { font-family: 'Cormorant Garamond', serif; }
+    .font-mono-custom { font-family: 'DM Mono', monospace; }
+    .glass { background: rgba(31,41,43,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
+    .glass-light { background: rgba(193,241,251,0.07); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(193,241,251,0.12); }
+    .glass-dark { background: rgba(3,26,57,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(27,152,196,0.15); }
+    .grid-bg { background-image: linear-gradient(rgba(27,152,196,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(27,152,196,0.04) 1px, transparent 1px); background-size: 60px 60px; }
+    @keyframes pulse-glow { 0%,100%{opacity:0.5} 50%{opacity:1} }
+    .pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+    @keyframes hotspot-pulse { 0%,100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.8); opacity: 0; } }
+    @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes shimmer { to { background-position: 200% center; } }
+    .shimmer { background: linear-gradient(90deg, #C1F1FB 0%, #54B685 25%, #1B98C4 50%, #C1F1FB 75%, #54B685 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 3s linear infinite; }
+    .text-grad-tech { background: linear-gradient(135deg, #C1F1FB, #1B98C4, #54B685); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .fade-in { animation: fadeIn 0.6s ease forwards; }
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #031A39; } ::-webkit-scrollbar-thumb { background: #14678F; border-radius: 2px; }
+
+    /* Hotspots */
+    .hotspot { position: absolute; width: 32px; height: 32px; transform: translate(-50%, -50%); cursor: pointer; z-index: 10; transition: transform 0.2s ease; }
+    .hotspot:hover { transform: translate(-50%, -50%) scale(1.2); }
+    .hotspot-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(27,152,196,0.7); animation: hotspot-pulse 2.5s ease-in-out infinite; }
+    .hotspot-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 10px; height: 10px; border-radius: 50%; background: #1B98C4; box-shadow: 0 0 10px rgba(27,152,196,0.9); transition: all 0.2s ease; }
+    .hotspot:hover .hotspot-ring { border-color: rgba(84,182,133,0.9); animation: none; transform: scale(1.1); }
+    .hotspot:hover .hotspot-dot { background: #54B685; box-shadow: 0 0 16px rgba(84,182,133,1); }
+    .hotspot.active .hotspot-dot { background: #54B685; box-shadow: 0 0 16px rgba(84,182,133,1); }
+
+    /* Tooltip */
+    #tooltip { transition: opacity 0.25s ease, transform 0.25s ease; transform: translateY(4px); }
+    #tooltip.visible { opacity: 1 !important; transform: translateY(0); }
+
+    /* Component list items */
+    .comp-item { cursor: pointer; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.05); }
+    .comp-item:hover { background: rgba(27,152,196,0.1) !important; border-color: rgba(27,152,196,0.3) !important; }
+    .comp-item.active { background: rgba(27,152,196,0.15) !important; border-color: rgba(27,152,196,0.4) !important; }
+
+    /* Scan line effect */
+    .scan-line { position: fixed; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(27,152,196,0.15), transparent); animation: scan 8s linear infinite; pointer-events: none; z-index: 100; }
+
+    /* Status bar */
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .status-dot.green { background: #54B685; box-shadow: 0 0 6px rgba(84,182,133,0.8); }
+    .status-dot.blue { background: #1B98C4; box-shadow: 0 0 6px rgba(27,152,196,0.8); }
+  </style>
+</head>
+<body>
+
+<!-- Scan line -->
+<div class="scan-line"></div>
+
+<!-- Background -->
+<div class="fixed inset-0 grid-bg opacity-30 pointer-events-none z-0"></div>
+<div class="fixed inset-0 pointer-events-none z-0" style="background:radial-gradient(circle at 20% 20%,rgba(20,103,143,0.12),transparent 50%),radial-gradient(circle at 80% 80%,rgba(61,160,75,0.06),transparent 50%)"></div>
+
+<!-- HEADER -->
+<header class="fixed top-0 left-0 right-0 z-50 py-4" style="background:rgba(10,22,40,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(27,152,196,0.12)">
+  <div class="max-w-screen-2xl mx-auto px-6 flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center" style="background:rgba(27,152,196,0.1);border:1px solid rgba(27,152,196,0.2)">
+          <img src="pics/sentinel corp logo .png" alt="Logo" class="w-full h-full object-contain p-1" onerror="this.style.display='none';this.parentElement.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'16\' height=\'16\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'#1B98C4\' stroke-width=\'2\'><path d=\'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\'/></svg>'">
+        </div>
+        <span class="font-display text-lg font-semibold text-a4 group-hover:text-b5 transition-colors" style="font-family:'Cormorant Garamond',serif">SENTINEL CORP</span>
+      </a>
+      <span style="color:rgba(193,241,251,0.2)" class="hidden md:block">/</span>
+      <span class="hidden md:block text-xs font-mono-custom tracking-widest uppercase text-b6">Circuito Interactivo</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="hidden md:flex items-center gap-3 px-4 py-2 rounded-full" style="background:rgba(27,152,196,0.08);border:1px solid rgba(27,152,196,0.15)">
+        <div class="status-dot green pulse-glow"></div>
+        <span class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.6)">SYS: NOMINAL</span>
+        <span class="text-xs font-mono-custom text-b6" id="live-temp">TEMP: 24.0°C</span>
+      </div>
+      <a href="index.html" class="flex items-center gap-2 px-4 py-2 rounded-full glass-light text-xs font-mono-custom tracking-wider uppercase text-b5 hover:bg-white hover:bg-opacity-5 transition-all">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        Volver
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN LAYOUT -->
+<main class="relative z-10 pt-20 min-h-screen flex flex-col">
+
+  <!-- Page title -->
+  <div class="max-w-screen-2xl mx-auto px-6 pt-8 pb-6 fade-in">
+    <div class="flex items-center gap-4 mb-3">
+      <span class="w-8 h-px bg-b6"></span>
+      <span class="text-xs font-mono-custom tracking-widest uppercase text-b6">Hardware Real — Prototipo v2.0</span>
+    </div>
+    <h1 class="font-display font-light" style="font-family:'Cormorant Garamond',serif">
+      <span class="block text-4xl md:text-5xl text-a4">EV Guardian —</span>
+      <span class="block text-4xl md:text-5xl font-semibold shimmer">Circuito Interactivo</span>
+    </h1>
+  </div>
+
+  <!-- Content grid -->
+  <div class="flex-1 max-w-screen-2xl mx-auto px-6 pb-8 w-full">
+    <div class="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6 h-full">
+
+      <!-- LEFT: Circuit viewer -->
+      <div class="flex flex-col gap-4">
+
+        <!-- Instruction bar -->
+        <div class="flex items-center justify-between px-4 py-3 rounded-xl" style="background:rgba(27,152,196,0.06);border:1px solid rgba(27,152,196,0.15)">
+          <div class="flex items-center gap-3">
+            <div class="status-dot blue pulse-glow"></div>
+            <span class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.6)">Haz clic en los puntos para explorar cada componente</span>
+          </div>
+          <span class="text-xs font-mono-custom text-b6 hidden md:block">10 componentes documentados</span>
+        </div>
+
+        <!-- Circuit image with hotspots -->
+        <div 
+          id="circuit-viewer"
+          class="relative overflow-hidden rounded-2xl cursor-crosshair flex-1"
+          style="border:1px solid rgba(27,152,196,0.2);min-height:480px;background:#031A39"
+          onmousemove="parallax(event)"
+          onmouseleave="resetParallax()"
+        >
+          <img 
+            id="circuit-img"
+            src="pics/look into real life ciruit .png"
+            alt="EV Guardian Circuito"
+            class="w-full h-full object-cover"
+            style="transform-origin:center;will-change:transform;transition:transform 0.15s ease"
+          >
+
+          <!-- Overlay -->
+          <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(to top,rgba(3,26,57,0.55),transparent 55%),linear-gradient(to right,rgba(3,26,57,0.2),transparent 30%)"></div>
+
+          <!-- HOTSPOTS -->
+          <div class="hotspot" style="left:45%;top:68%" onclick="selectComponent('arduino')" id="h-arduino"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+          <div class="hotspot" style="left:50%;top:23%" onclick="selectComponent('lcd')" id="h-lcd"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+          <div class="hotspot" style="left:50%;top:9%" onclick="selectComponent('leds')" id="h-leds"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+          <div class="hotspot" style="left:73%;top:19%" onclick="selectComponent('buzzer')" id="h-buzzer"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+          <div class="hotspot" style="left:19%;top:58%" onclick="selectComponent('fan')" id="h-fan"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+          <div class="hotspot" style="left:83%;top:40%" onclick="selectComponent('pump')" id="h-pump"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+          <div class="hotspot" style="left:10%;top:24%" onclick="selectComponent('servo')" id="h-servo"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+          <div class="hotspot" style="left:86%;top:74%" onclick="selectComponent('battery')" id="h-battery"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+          <div class="hotspot" style="left:73%;top:74%" onclick="selectComponent('relay')" id="h-relay"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+          <div class="hotspot" style="left:29%;top:38%" onclick="selectComponent('transistor')" id="h-transistor"><div class="hotspot-ring"></div><div class="hotspot-dot"></div></div>
+
+          <!-- Inline tooltip -->
+          <div id="tooltip" class="absolute z-20 opacity-0 pointer-events-none" style="max-width:240px">
+            <div class="glass-dark rounded-xl p-4" style="border:1px solid rgba(27,152,196,0.35)">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-2 h-2 rounded-full bg-b3 pulse-glow shrink-0"></span>
+                <span id="tt-title" class="text-xs font-mono-custom tracking-wider uppercase text-b6"></span>
+              </div>
+              <p id="tt-desc" class="text-xs font-light leading-relaxed mb-2" style="color:rgba(193,241,251,0.75)"></p>
+              <p id="tt-pin" class="text-xs font-mono-custom" style="color:rgba(27,152,196,0.9)"></p>
+            </div>
+          </div>
+
+          <!-- Bottom badge -->
+          <div class="absolute bottom-4 left-4 right-4 pointer-events-none">
+            <div class="glass rounded-xl px-4 py-3 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-b3 pulse-glow"></span>
+                <span class="text-xs font-mono-custom tracking-wider uppercase text-b5">EV Guardian — Tinkercad v2.0</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.35)">15+ componentes · 38 conexiones</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats bar -->
+        <div class="grid grid-cols-4 gap-3">
+          <div class="glass rounded-xl p-4 text-center">
+            <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">A0</p>
+            <p class="text-xs font-mono-custom mt-1" style="color:rgba(193,241,251,0.4)">Sensor temp</p>
+          </div>
+          <div class="glass rounded-xl p-4 text-center">
+            <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">D5</p>
+            <p class="text-xs font-mono-custom mt-1" style="color:rgba(193,241,251,0.4)">Fan PWM</p>
+          </div>
+          <div class="glass rounded-xl p-4 text-center">
+            <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">D11</p>
+            <p class="text-xs font-mono-custom mt-1" style="color:rgba(193,241,251,0.4)">Kill-Safe</p>
+          </div>
+          <div class="glass rounded-xl p-4 text-center">
+            <p class="font-display text-2xl font-semibold text-a4 text-grad-tech" style="font-family:'Cormorant Garamond',serif">0x20</p>
+            <p class="text-xs font-mono-custom mt-1" style="color:rgba(193,241,251,0.4)">LCD I2C addr</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Component panel -->
+      <div class="flex flex-col gap-4">
+
+        <!-- Selected component detail -->
+        <div id="detail-panel" class="glass-dark rounded-2xl p-6" style="border:1px solid rgba(27,152,196,0.2)">
+          <p class="text-xs font-mono-custom tracking-widest uppercase text-b6 mb-4">Componente seleccionado</p>
+          <div id="detail-content">
+            <div class="flex items-center gap-3 mb-4">
+              <div id="detail-icon" class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(27,152,196,0.15)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              </div>
+              <div>
+                <h2 id="detail-title" class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">Selecciona un punto</h2>
+                <p id="detail-role" class="text-xs font-mono-custom text-b6 mt-1">Haz clic en cualquier marcador azul</p>
+              </div>
+            </div>
+            <p id="detail-desc" class="text-sm font-light leading-relaxed mb-4" style="color:rgba(193,241,251,0.6)">Explora el circuito haciendo clic sobre los puntos pulsantes. Cada componente tiene documentación técnica completa sobre su función en el sistema de protección térmica.</p>
+            <div id="detail-pins" class="rounded-xl p-3" style="background:rgba(27,152,196,0.06);border:1px solid rgba(27,152,196,0.12)">
+              <p class="text-xs font-mono-custom tracking-wider uppercase" style="color:rgba(193,241,251,0.3)">Pin / Conexión</p>
+              <p id="detail-pin-val" class="text-sm font-mono-custom text-b5 mt-1">—</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component list -->
+        <div class="glass-dark rounded-2xl p-4" style="border:1px solid rgba(27,152,196,0.15)">
+          <p class="text-xs font-mono-custom tracking-widest uppercase text-b6 mb-3 px-1">Todos los componentes</p>
+          <div class="space-y-1.5" id="comp-list">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- Back button -->
+        <a href="index.html" class="flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-white font-medium text-sm tracking-wider uppercase hover:scale-105 transition-all duration-300" style="background:linear-gradient(90deg,#14678F,#1B98C4)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          Volver al Sitio Principal
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const components = {
+  arduino: {
+    title: "Arduino Uno R3",
+    role: "Microcontrolador principal",
+    desc: "El cerebro del sistema EV Guardian. Lee la temperatura del TMP36 cada 100ms a través de A0 y controla todos los actuadores en tiempo real. Ejecuta el protocolo Kill-Safe cuando la temperatura supera los 40°C.",
+    pin: "A0 · A1 · A2 · D2 · D3 · D4 · D5 · D6 · D7 · D11",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>`
+  },
+  lcd: {
+    title: "LCD 16×2 I2C",
+    role: "Interfaz de visualización",
+    desc: "Pantalla de estado en tiempo real. Muestra la temperatura en línea 1 y el estado del sistema en línea 2. Usa protocolo I2C con chip PCF8574 en dirección 0x20. Arranca con animación de boot estilo Fallout.",
+    pin: "SDA → A4  ·  SCL → A5  ·  Dirección: 0x20",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8M12 3v4"/></svg>`
+  },
+  leds: {
+    title: "LEDs de Estado",
+    role: "Indicadores visuales",
+    desc: "Tres LEDs codificados por color: Verde (NORMAL) en D2, Amarillo (WARNING, cooling activo) en D3, Rojo parpadeante (CRITICAL, corte de batería) en D4. Cada uno con resistencia de 1kΩ.",
+    pin: "D2 → Verde  ·  D3 → Amarillo  ·  D4 → Rojo",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>`
+  },
+  buzzer: {
+    title: "Piezo Buzzer",
+    role: "Alarma acústica",
+    desc: "Sistema de alerta sonora. En estado WARNING emite pitidos intermitentes a 800Hz cada 500ms. En estado CRITICAL emite tono continuo a 1200Hz hasta que el operador intervenga.",
+    pin: "(+) → D7  ·  (−) → Rail negativo",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`
+  },
+  fan: {
+    title: "DC Motor #1 — Ventilador",
+    role: "Enfriamiento de aire principal",
+    desc: "Ventilador de enfriamiento primario. Arranca en modo suave desde el boot (PWM 60/255) y escala automáticamente con la temperatura. En CRITICAL alcanza potencia máxima 255/255.",
+    pin: "D5 (PWM) → Resistencia 1kΩ → Base NPN",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4z"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>`
+  },
+  pump: {
+    title: "DC Motor #2 — Bomba",
+    role: "Circulación de refrigerante",
+    desc: "Simula bomba de refrigeración líquida. Activa en todo momento — nunca se detiene completamente. En NORMAL circula a mínimo (40/255), en WARNING escala gradualmente, en CRITICAL va a máximo.",
+    pin: "A1 (PWM) → Resistencia 1kΩ → Base NPN #2",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>`
+  },
+  servo: {
+    title: "Micro Servo — Flap",
+    role: "Control de ventilación",
+    desc: "Controla la apertura del flap de ventilación mecánica. 0° en reposo (NORMAL), escala proporcional en WARNING (0°–90°), 110° completamente abierto en CRITICAL. Usa librería Servo nativa.",
+    pin: "SIG → D6  ·  VCC → Rail +5V  ·  GND → Rail −",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`
+  },
+  battery: {
+    title: "Batería 9V",
+    role: "Paquete de batería simulado",
+    desc: "Representa el paquete de baterías del vehículo eléctrico. Conectada al COM del relay SPDT. En operación normal alimenta el circuito de carga (LED azul encendido). En CRITICAL el relay la desconecta.",
+    pin: "(+) → COM del Relay  ·  (−) → Rail negativo",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3M6 7V5M10 7V5"/></svg>`
+  },
+  relay: {
+    title: "Relay SPDT — Kill-Safe",
+    role: "Protocolo de corte de emergencia",
+    desc: "Protocolo Kill-Safe físico. Controlado por transistor NPN para proteger el pin D11. HIGH = batería conectada (operación normal). LOW = aislamiento inmediato en CRITICAL — corta la cadena exotérmica.",
+    pin: "D11 → NPN → Bobina  ·  COM → Batería  ·  NO → Carga",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+  },
+  transistor: {
+    title: "Transistores NPN (BJT)",
+    role: "Interruptores de potencia",
+    desc: "Tres transistores NPN actúan como interruptores de potencia para proteger los pines Arduino. Uno por motor DC, uno para el relay. La base se controla desde Arduino a través de resistencia de 1kΩ.",
+    pin: "Base → 1kΩ → Arduino  ·  Colector → Carga  ·  Emisor → GND",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><path d="M12 2v20M2 12h10M22 7l-10 5M22 17l-10-5"/></svg>`
+  }
+};
+
+const compOrder = ['arduino','lcd','leds','buzzer','fan','pump','servo','battery','relay','transistor'];
+let activeComp = null;
+
+// Build component list
+const list = document.getElementById('comp-list');
+compOrder.forEach(key => {
+  const c = components[key];
+  const el = document.createElement('div');
+  el.id = `li-${key}`;
+  el.className = 'comp-item glass rounded-xl px-3 py-2.5 flex items-center gap-3';
+  el.innerHTML = `
+    <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(27,152,196,0.12)">${c.icon}</div>
+    <div class="min-w-0">
+      <p class="text-xs font-medium text-a4 truncate">${c.title}</p>
+      <p class="text-xs font-mono-custom truncate" style="color:rgba(193,241,251,0.35);font-size:10px">${c.role}</p>
+    </div>
+    <div class="w-2 h-2 rounded-full shrink-0 ml-auto" style="background:rgba(27,152,196,0.4)"></div>
+  `;
+  el.onclick = () => selectComponent(key);
+  list.appendChild(el);
+});
+
+function selectComponent(key) {
+  const c = components[key];
+  if (!c) return;
+
+  // Update active hotspot
+  document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active'));
+  document.getElementById(`h-${key}`)?.classList.add('active');
+
+  // Update list
+  document.querySelectorAll('.comp-item').forEach(el => el.classList.remove('active'));
+  document.getElementById(`li-${key}`)?.classList.add('active');
+
+  // Update detail panel
+  document.getElementById('detail-title').textContent = c.title;
+  document.getElementById('detail-role').textContent = c.role;
+  document.getElementById('detail-desc').textContent = c.desc;
+  document.getElementById('detail-pin-val').textContent = c.pin;
+  document.getElementById('detail-icon').innerHTML = c.icon;
+
+  // Show inline tooltip
+  const hotspot = document.getElementById(`h-${key}`);
+  const viewer = document.getElementById('circuit-viewer');
+  const tooltip = document.getElementById('tooltip');
+
+  if (hotspot && viewer) {
+    const vRect = viewer.getBoundingClientRect();
+    const hRect = hotspot.getBoundingClientRect();
+    let left = hRect.left - vRect.left + 20;
+    let top = hRect.top - vRect.top - 10;
+    if (left + 250 > vRect.width) left = left - 270;
+    if (top + 140 > vRect.height) top = top - 120;
+    if (top < 0) top = 10;
+    if (left < 0) left = 10;
+
+    document.getElementById('tt-title').textContent = c.title;
+    document.getElementById('tt-desc').textContent = c.desc.substring(0, 100) + '...';
+    document.getElementById('tt-pin').textContent = c.pin;
+
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+    tooltip.style.opacity = '1';
+    tooltip.classList.add('visible');
+
+    setTimeout(() => {
+      tooltip.style.opacity = '0';
+      tooltip.classList.remove('visible');
+    }, 3000);
+  }
+
+  activeComp = key;
+}
+
+// Parallax
+function parallax(e) {
+  const viewer = document.getElementById('circuit-viewer');
+  const img = document.getElementById('circuit-img');
+  const rect = viewer.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width - 0.5;
+  const y = (e.clientY - rect.top) / rect.height - 0.5;
+  img.style.transform = `scale(1.05) translate(${x * -10}px, ${y * -10}px)`;
+}
+
+function resetParallax() {
+  document.getElementById('circuit-img').style.transform = 'scale(1) translate(0,0)';
+}
+
+// Live temp simulation in header
+let tempSim = 24.0;
+let tempDir = 1;
+setInterval(() => {
+  tempSim += (Math.random() * 0.3 - 0.1) * tempDir;
+  if (tempSim > 28) tempDir = -1;
+  if (tempSim < 22) tempDir = 1;
+  document.getElementById('live-temp').textContent = `TEMP: ${tempSim.toFixed(1)}°C`;
+}, 1200);
+</script>
+</body>
+</html>
