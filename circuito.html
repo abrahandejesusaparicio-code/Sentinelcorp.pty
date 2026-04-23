@@ -23,6 +23,9 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { background: #0a1628; color: #FEFEFC; font-family: 'DM Sans', sans-serif; overflow-x: hidden; min-height: 100vh; }
+    /* Page transition in */
+    #page-in { position:fixed;inset:0;background:#031A39;z-index:9998;pointer-events:none;transition:opacity 0.5s ease; }
+    #page-in.done { opacity:0; }
     .font-display { font-family: 'Cormorant Garamond', serif; }
     .font-mono-custom { font-family: 'DM Mono', monospace; }
     .glass { background: rgba(31,41,43,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
@@ -69,6 +72,9 @@
 </head>
 <body>
 
+<!-- Page entry transition -->
+<div id="page-in"></div>
+
 <!-- Scan line -->
 <div class="scan-line"></div>
 
@@ -95,10 +101,10 @@
         <span class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.6)">SYS: NOMINAL</span>
         <span class="text-xs font-mono-custom text-b6" id="live-temp">TEMP: 24.0°C</span>
       </div>
-      <a href="index.html" class="flex items-center gap-2 px-4 py-2 rounded-full glass-light text-xs font-mono-custom tracking-wider uppercase text-b5 hover:bg-white hover:bg-opacity-5 transition-all">
+      <button onclick="navigateTo('index.html')" class="flex items-center gap-2 px-4 py-2 rounded-full glass-light text-xs font-mono-custom tracking-wider uppercase text-b5 hover:bg-white hover:bg-opacity-5 transition-all">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
         Volver
-      </a>
+      </button>
     </div>
   </div>
 </header>
@@ -245,16 +251,30 @@
         </div>
 
         <!-- Back button -->
-        <a href="index.html" class="flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-white font-medium text-sm tracking-wider uppercase hover:scale-105 transition-all duration-300" style="background:linear-gradient(90deg,#14678F,#1B98C4)">
+        <button onclick="navigateTo('index.html')" class="flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-white font-medium text-sm tracking-wider uppercase hover:scale-105 transition-all duration-300" style="background:linear-gradient(90deg,#14678F,#1B98C4)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
           Volver al Sitio Principal
-        </a>
+        </button>
       </div>
     </div>
   </div>
 </main>
 
 <script>
+/* Page entry fade-in */
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('page-in').classList.add('done'), 50);
+});
+
+/* Navigate back with transition */
+function navigateTo(url) {
+  const el = document.getElementById('page-in');
+  el.classList.remove('done');
+  el.style.opacity = '1';
+  el.style.pointerEvents = 'all';
+  setTimeout(() => { window.location.href = url; }, 380);
+}
+
 const components = {
   arduino: {
     title: "Arduino Uno R3",
