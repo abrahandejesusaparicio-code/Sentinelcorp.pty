@@ -20,13 +20,18 @@
     }
   </script>
   <style>
+    /* ─── RESET ─────────────────────────────────────────────── */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { background: #1F292B; color: #FEFEFC; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
     .font-display { font-family: 'Cormorant Garamond', serif; }
     .font-mono-custom { font-family: 'DM Mono', monospace; }
+
+    /* ─── GLASS ──────────────────────────────────────────────── */
     .glass { background: rgba(31,41,43,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
     .glass-light { background: rgba(193,241,251,0.07); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(193,241,251,0.12); }
+
+    /* ─── SCROLL REVEAL ──────────────────────────────────────── */
     .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
     .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -34,44 +39,156 @@
     .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .reveal-right.visible { opacity: 1; transform: translateX(0); }
     .d1{transition-delay:0.1s} .d2{transition-delay:0.2s} .d3{transition-delay:0.3s} .d4{transition-delay:0.4s}
+
+    /* ─── GRADIENTS ──────────────────────────────────────────── */
     .text-grad-tech { background: linear-gradient(135deg, #C1F1FB, #1B98C4, #54B685); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .text-grad-nature { background: linear-gradient(135deg, #C9ECCE, #3DA04B, #33713F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .shimmer { background: linear-gradient(90deg, #C1F1FB 0%, #54B685 25%, #1B98C4 50%, #C1F1FB 75%, #54B685 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 3s linear infinite; }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
     @keyframes shimmer { to { background-position: 200% center; } }
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
     .float { animation: float 6s ease-in-out infinite; }
     @keyframes pulse-glow { 0%,100%{opacity:0.5} 50%{opacity:1} }
     .pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+    @keyframes scan-h { 0%{transform:translateX(-100%)} 100%{transform:translateX(100vw)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ─── BG GRID ────────────────────────────────────────────── */
     .grid-bg { background-image: linear-gradient(rgba(27,152,196,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(27,152,196,0.06) 1px, transparent 1px); background-size: 60px 60px; }
+
+    /* ─── SCROLLBAR ──────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: #031A39; } ::-webkit-scrollbar-thumb { background: #14678F; border-radius: 3px; }
-    .sol-card:hover { background: rgba(20,103,143,0.12) !important; border-color: rgba(27,152,196,0.3) !important; }
-    .sus-card:hover { background: rgba(61,160,75,0.12) !important; }
-    .method-card:hover { background: rgba(27,152,196,0.1) !important; border-color: rgba(27,152,196,0.25) !important; }
+
+    /* ─── CARD HOVERS ────────────────────────────────────────── */
+    .sol-card { transition: all 0.3s ease; }
+    .sol-card:hover { background: rgba(20,103,143,0.12) !important; border-color: rgba(27,152,196,0.3) !important; transform: translateY(-4px); }
+    .sus-card { transition: all 0.3s ease; }
+    .sus-card:hover { background: rgba(61,160,75,0.12) !important; transform: translateY(-4px); }
+    .method-card { transition: all 0.3s ease; }
+    .method-card:hover { background: rgba(27,152,196,0.1) !important; border-color: rgba(27,152,196,0.25) !important; transform: translateY(-4px); }
+
+    /* ─── NAV ────────────────────────────────────────────────── */
     #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
     #mobile-menu.open { max-height: 400px; }
     .nav-link { position: relative; }
     .nav-link::after { content:''; position:absolute; left:0; bottom:-2px; width:0; height:1px; background:#1B98C4; transition:width 0.3s ease; }
     .nav-link:hover::after { width:100%; }
-    .sus-card { transition: all 0.3s ease; }
-    .method-card { transition: all 0.3s ease; }
+
+    /* ─── INTRO SCREEN ───────────────────────────────────────── */
+    #intro-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #031A39;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    #intro-screen.hidden-out { opacity: 0; visibility: hidden; pointer-events: none; }
+    @keyframes intro-logo { 0%{opacity:0;transform:scale(0.75) translateY(16px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+    @keyframes intro-bar { from{width:0} to{width:100%} }
+    @keyframes intro-text { 0%{opacity:0;letter-spacing:0.5em} 100%{opacity:1;letter-spacing:0.25em} }
+    .intro-logo-el { animation: intro-logo 0.7s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
+    .intro-name-el { animation: intro-text 0.8s ease 0.6s both; }
+    .intro-bar-el { animation: intro-bar 1.4s cubic-bezier(0.4,0,0.2,1) 0.5s both; }
+    #intro-progress { width: 200px; height: 1px; background: rgba(27,152,196,0.15); border-radius: 2px; overflow: hidden; }
+    #intro-fill { height: 100%; background: linear-gradient(90deg,#14678F,#1B98C4,#54B685); }
+    #intro-scan { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,transparent,rgba(27,152,196,0.4),transparent); animation: scan-h 2s linear infinite; }
+
+    /* ─── PAGE TRANSITION OVERLAY ────────────────────────────── */
+    #page-out {
+      position: fixed; inset: 0; background: #031A39; z-index: 9998;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    #page-out.active { opacity: 1; pointer-events: all; }
+
+    /* ─── CIRCUIT HIGHLIGHT CTA ──────────────────────────────── */
+    .circuit-cta-btn {
+      position: relative; overflow: hidden;
+      background: linear-gradient(90deg, #14678F, #1B98C4, #54B685);
+      border-radius: 9999px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .circuit-cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 32px rgba(27,152,196,0.5); }
+    .circuit-cta-btn::before {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    .circuit-cta-btn:hover::before { transform: translateX(100%); }
+    @keyframes border-spin {
+      0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%}
+    }
+    .circuit-hero-card {
+      position: relative;
+      background: linear-gradient(135deg,rgba(20,103,143,0.25),rgba(3,26,57,0.6));
+      border-radius: 20px;
+    }
+    .circuit-hero-card::before {
+      content:'';
+      position:absolute; inset:-1px; border-radius: 20px; z-index:-1;
+      background: linear-gradient(135deg,#1B98C4,#54B685,#14678F,#1B98C4);
+      background-size: 300% 300%;
+      animation: border-spin 4s ease infinite;
+    }
+
+    /* ─── SPEC BARS ──────────────────────────────────────────── */
+    .spec-bar-track { height: 4px; background: rgba(27,152,196,0.12); border-radius: 2px; overflow: hidden; }
+    .spec-bar-fill { height: 100%; border-radius: 2px; width: 0; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+
+    /* ─── TEMP SIMULATOR ─────────────────────────────────────── */
+    input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: rgba(27,152,196,0.18); border-radius: 2px; outline: none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #1B98C4; cursor: pointer; box-shadow: 0 0 10px rgba(27,152,196,0.6); transition: background 0.3s, box-shadow 0.3s; }
+    input[type=range].warning::-webkit-slider-thumb { background: #f59e0b; box-shadow: 0 0 10px rgba(245,158,11,0.6); }
+    input[type=range].critical::-webkit-slider-thumb { background: #ef4444; box-shadow: 0 0 10px rgba(239,68,68,0.6); }
+
+    /* ─── TEAM CARDS ─────────────────────────────────────────── */
+    .founder-card { transition: all 0.3s ease; }
+    .founder-card:hover { background: rgba(27,152,196,0.15) !important; transform: translateY(-2px); }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  INTRO SCREEN                                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="intro-screen">
+  <div id="intro-scan"></div>
+  <div class="intro-logo-el flex items-center gap-4">
+    <div class="w-14 h-14 rounded-xl overflow-hidden flex items-center justify-center" style="background:rgba(27,152,196,0.15);border:1px solid rgba(27,152,196,0.35)">
+      <img src="pics/sentinel corp logo .png" alt="Sentinel Corp" class="w-full h-full object-contain p-2"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'28\' height=\'28\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'#1B98C4\' stroke-width=\'1.5\'><path d=\'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\'/></svg>'">
+    </div>
+    <div>
+      <p class="intro-name-el font-display text-3xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif;letter-spacing:0.25em">SENTINEL CORP</p>
+      <p class="text-xs font-mono-custom mt-1" style="color:rgba(193,241,251,0.4);letter-spacing:0.15em">THERMAL SECURITY SYSTEMS</p>
+    </div>
+  </div>
+  <div id="intro-progress">
+    <div id="intro-fill" class="intro-bar-el"></div>
+  </div>
+  <p class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.25);letter-spacing:0.1em">INICIANDO SISTEMA · IEC 61508</p>
+</div>
+
+<!-- PAGE TRANSITION OVERLAY -->
+<div id="page-out"></div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  HEADER                                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <header id="header" class="fixed top-0 left-0 right-0 z-50 py-5 transition-all duration-500">
   <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
     <a href="#" class="flex items-center gap-3 group">
       <div class="w-9 h-9 rounded-lg overflow-hidden ring-1 ring-b6 ring-opacity-30 flex items-center justify-center" style="background:rgba(27,152,196,0.1)">
-        <img src="pics/sentinel corp logo .png" alt="Sentinel Corp Logo" class="w-full h-full object-contain p-1" onerror="this.style.display='none';this.parentElement.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'#1B98C4\' stroke-width=\'2\'><path d=\'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\'/></svg>'">
+        <img src="pics/sentinel corp logo .png" alt="Sentinel Corp Logo" class="w-full h-full object-contain p-1"
+          onerror="this.style.display='none';this.parentElement.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'#1B98C4\' stroke-width=\'2\'><path d=\'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\'/></svg>'">
       </div>
       <span class="font-display text-xl font-semibold tracking-wide text-a4 group-hover:text-b5 transition-colors duration-300" style="font-family:'Cormorant Garamond',serif">SENTINEL CORP</span>
     </a>
     <nav class="hidden md:flex items-center gap-8">
       <a href="#about" class="nav-link text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 transition-opacity">Nosotros</a>
       <a href="#solutions" class="nav-link text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 transition-opacity">Proyecto</a>
-      <a href="#methodology" class="nav-link text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 transition-opacity">Metodología</a>
-      <a href="#sustainability" class="nav-link text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 transition-opacity">Especialización</a>
+      <a href="#specs" class="nav-link text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 transition-opacity">Especificaciones</a>
       <a href="#circuito" class="nav-link text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 transition-opacity">Circuito</a>
       <a href="#contact" class="nav-link text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 transition-opacity">Contacto</a>
       <a href="#contact" class="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-mono-custom tracking-wider uppercase text-white transition-all duration-300 hover:scale-105" style="background:linear-gradient(90deg,#14678F,#1B98C4)">
@@ -86,15 +203,16 @@
     <nav class="flex flex-col px-6 py-4 gap-4">
       <a href="#about" onclick="toggleMenu()" class="text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 border-b border-white border-opacity-5 pb-3">Nosotros</a>
       <a href="#solutions" onclick="toggleMenu()" class="text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 border-b border-white border-opacity-5 pb-3">Proyecto</a>
-      <a href="#methodology" onclick="toggleMenu()" class="text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 border-b border-white border-opacity-5 pb-3">Metodología</a>
-      <a href="#sustainability" onclick="toggleMenu()" class="text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 border-b border-white border-opacity-5 pb-3">Especialización</a>
+      <a href="#specs" onclick="toggleMenu()" class="text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 border-b border-white border-opacity-5 pb-3">Especificaciones</a>
       <a href="#circuito" onclick="toggleMenu()" class="text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 border-b border-white border-opacity-5 pb-3">Circuito</a>
       <a href="#contact" onclick="toggleMenu()" class="text-xs font-mono-custom tracking-widest uppercase text-b5 opacity-70 hover:opacity-100 pb-3">Contacto</a>
     </nav>
   </div>
 </header>
 
-<!-- HERO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  HERO                                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <section id="hero" class="relative min-h-screen flex flex-col justify-center overflow-hidden">
   <div class="absolute inset-0 z-0">
     <img src="pics/back ground sentinel corp .png" alt="" class="w-full h-full object-cover object-center">
@@ -119,7 +237,7 @@
         <span class="block text-6xl md:text-8xl font-semibold shimmer">Futuro Energético</span>
       </h1>
       <p class="hero-el text-lg md:text-xl font-light leading-relaxed max-w-2xl mb-12 d2" style="color:rgba(193,241,251,0.65)">
-        Sentinel Corp desarrolla sistemas embebidos de protección térmica activa para baterías de ion-litio, previniendo la fuga térmica (thermal runaway) mediante monitoreo continuo, protocolos Kill-Safe y respuesta automática en milisegundos.
+        Sentinel Corp desarrolla sistemas embebidos de protección térmica activa para baterías de ion-litio, previniendo la fuga térmica mediante monitoreo continuo, protocolos Kill-Safe y respuesta automática en milisegundos.
       </p>
       <div class="hero-el flex flex-wrap gap-4 mb-20 d3">
         <a href="#solutions" class="group flex items-center gap-3 px-8 py-4 rounded-full text-white font-medium text-sm tracking-wider uppercase hover:scale-105 transition-all duration-300" style="background:linear-gradient(90deg,#14678F,#1B98C4,#54B685)">
@@ -133,19 +251,28 @@
           <div class="w-10 h-10 rounded-lg glass-light flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <div><div class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">&lt; 5ms</div><div class="text-xs font-mono-custom tracking-wider text-b5 opacity-50 uppercase">Detección de anomalías</div></div>
+          <div>
+            <div class="font-display text-2xl font-semibold text-a4 counter-el" data-target="5" data-suffix="ms" style="font-family:'Cormorant Garamond',serif">&lt; 5ms</div>
+            <div class="text-xs font-mono-custom tracking-wider text-b5 opacity-50 uppercase">Detección de anomalías</div>
+          </div>
         </div>
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-lg glass-light flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
-          <div><div class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">Kill-Safe</div><div class="text-xs font-mono-custom tracking-wider text-b5 opacity-50 uppercase">Protocolo de aislamiento</div></div>
+          <div>
+            <div class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">Kill-Safe</div>
+            <div class="text-xs font-mono-custom tracking-wider text-b5 opacity-50 uppercase">Protocolo de aislamiento</div>
+          </div>
         </div>
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-lg glass-light flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           </div>
-          <div><div class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">Arduino</div><div class="text-xs font-mono-custom tracking-wider text-b5 opacity-50 uppercase">Arquitectura embebida</div></div>
+          <div>
+            <div class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">Arduino</div>
+            <div class="text-xs font-mono-custom tracking-wider text-b5 opacity-50 uppercase">Arquitectura embebida</div>
+          </div>
         </div>
       </div>
     </div>
@@ -156,7 +283,9 @@
   </a>
 </section>
 
-<!-- NOSOTROS / EQUIPO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  EQUIPO — solo Abrahan y Jeremías                          -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <section id="about" class="relative py-32 overflow-hidden" style="background:#1F292B">
   <div class="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style="background:linear-gradient(to left,rgba(3,26,57,0.4),transparent)"></div>
   <div class="absolute bottom-0 left-0 w-96 h-96 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(20,103,143,0.08),transparent 70%)"></div>
@@ -183,28 +312,21 @@
               </div>
             </div>
           </div>
-          <!-- Fundadores -->
-          <div class="grid grid-cols-3 gap-3 mt-6">
-            <div class="glass rounded-xl p-3 text-center hover:bg-blue-900 hover:bg-opacity-20 transition-all duration-300 cursor-default">
-              <div class="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center" style="background:rgba(27,152,196,0.2)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <!-- Dos fundadores -->
+          <div class="grid grid-cols-2 gap-4 mt-6">
+            <div class="founder-card glass rounded-xl p-4 text-center cursor-default" style="border:1px solid rgba(27,152,196,0.15)">
+              <div class="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center" style="background:rgba(27,152,196,0.2)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </div>
-              <p class="font-medium text-a4 leading-tight" style="font-size:11px">Abrahan<br>Aparicio</p>
-              <p style="font-size:9px;color:rgba(193,241,251,0.35)" class="font-mono-custom mt-1">Fundador</p>
+              <p class="font-medium text-a4 text-sm leading-tight">Abrahan<br>Aparicio</p>
+              <p class="text-xs font-mono-custom mt-1.5" style="color:rgba(193,241,251,0.35)">Fundador · Ingeniería</p>
             </div>
-            <div class="glass rounded-xl p-3 text-center hover:bg-blue-900 hover:bg-opacity-20 transition-all duration-300 cursor-default">
-              <div class="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center" style="background:rgba(27,152,196,0.2)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <div class="founder-card glass rounded-xl p-4 text-center cursor-default" style="border:1px solid rgba(27,152,196,0.15)">
+              <div class="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center" style="background:rgba(27,152,196,0.2)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </div>
-              <p class="font-medium text-a4 leading-tight" style="font-size:11px">Jeremías<br>Meléndez</p>
-              <p style="font-size:9px;color:rgba(193,241,251,0.35)" class="font-mono-custom mt-1">Fundador</p>
-            </div>
-            <div class="glass rounded-xl p-3 text-center hover:bg-blue-900 hover:bg-opacity-20 transition-all duration-300 cursor-default">
-              <div class="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center" style="background:rgba(27,152,196,0.2)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </div>
-              <p class="font-medium text-a4 leading-tight" style="font-size:11px">David<br>Hassine</p>
-              <p style="font-size:9px;color:rgba(193,241,251,0.35)" class="font-mono-custom mt-1">Fundador</p>
+              <p class="font-medium text-a4 text-sm leading-tight">Jeremías<br>Meléndez</p>
+              <p class="text-xs font-mono-custom mt-1.5" style="color:rgba(193,241,251,0.35)">Fundador · Diseño 3D</p>
             </div>
           </div>
         </div>
@@ -221,7 +343,7 @@
           <p class="text-sm text-b6 font-mono-custom mt-3">— Equipo Fundador, Sentinel Corp</p>
         </div>
         <div class="space-y-4 text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.6)">
-          <p>Sentinel Corp es una empresa de base tecnológica fundada por Abrahan Aparicio, Jeremías Meléndez y David Hassine — tres ingenieros comprometidos con la seguridad de los sistemas de almacenamiento energético moderno.</p>
+          <p>Sentinel Corp es una empresa de base tecnológica fundada por Abrahan Aparicio y Jeremías Meléndez — dos ingenieros comprometidos con la seguridad de los sistemas de almacenamiento energético moderno.</p>
           <p>Nuestro enfoque combina hardware embebido sobre arquitectura Arduino, inteligencia de datos y protocolos de seguridad funcional bajo estándares IEC 61508 e ISO 26262 para garantizar que la fuga térmica nunca escale a una catástrofe.</p>
           <p>Toda nuestra operación se gestiona con agilidad a través de Notion AI, lo que nos permite mantener documentación técnica actualizada, sincronizar simulaciones con decisiones de desarrollo y cumplir cada milestone con precisión.</p>
         </div>
@@ -230,14 +352,16 @@
           <span class="px-3 py-1.5 rounded-full text-xs font-mono-custom glass" style="color:rgba(193,241,251,0.6)">Arduino</span>
           <span class="px-3 py-1.5 rounded-full text-xs font-mono-custom glass" style="color:rgba(193,241,251,0.6)">Seguridad Funcional</span>
           <span class="px-3 py-1.5 rounded-full text-xs font-mono-custom glass" style="color:rgba(193,241,251,0.6)">Electromovilidad</span>
-          <span class="px-3 py-1.5 rounded-full text-xs font-mono-custom glass" style="color:rgba(193,241,251,0.6)">Notion AI</span>
+          <span class="px-3 py-1.5 rounded-full text-xs font-mono-custom glass" style="color:rgba(193,241,251,0.6)">Diseño 3D</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PROYECTO PRINCIPAL: EV THERMAL GUARDIAN -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  PROYECTO PRINCIPAL                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <section id="solutions" class="relative py-32 overflow-hidden" style="background:#031A39">
   <div class="absolute inset-0 grid-bg opacity-25"></div>
   <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(27,152,196,0.3),transparent)"></div>
@@ -254,10 +378,10 @@
         <span class="block text-5xl md:text-6xl text-a4">EV Thermal</span>
         <span class="block text-5xl md:text-6xl font-semibold text-grad-tech">Guardian</span>
       </h2>
-      <p class="reveal text-lg font-light leading-relaxed d2" style="color:rgba(193,241,251,0.55)">Sistema robótico de control embebido diseñado para prevenir y mitigar la fuga térmica (thermal runaway) en baterías de ion-litio, mediante monitoreo continuo en ciclo cerrado y respuesta automática en tiempo real.</p>
+      <p class="reveal text-lg font-light leading-relaxed d2" style="color:rgba(193,241,251,0.55)">Sistema robótico de control embebido diseñado para prevenir y mitigar la fuga térmica en baterías de ion-litio, mediante monitoreo continuo en ciclo cerrado y respuesta automática en tiempo real.</p>
     </div>
 
-    <!-- Banner justificación técnica -->
+    <!-- Banner justificación -->
     <div class="reveal mb-16 rounded-2xl p-8 d1" style="background:linear-gradient(135deg,rgba(20,103,143,0.2),rgba(27,152,196,0.08));border:1px solid rgba(27,152,196,0.2)">
       <div class="flex flex-col md:flex-row gap-6 items-start">
         <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(27,152,196,0.2)">
@@ -265,7 +389,7 @@
         </div>
         <div>
           <p class="text-xs font-mono-custom tracking-widest uppercase text-b6 mb-3">Justificación Técnica y Operativa</p>
-          <p class="text-base font-light leading-relaxed" style="color:rgba(193,241,251,0.72)">La fuga térmica es un proceso exotérmico <strong class="text-b5 font-medium">irreversible</strong> que puede derivar en incendios catastróficos y pérdida de vidas. Sentinel Corp implementa una capa de seguridad funcional basada en <strong class="text-b6 font-medium">IEC 61508 / ISO 26262</strong>, detectando anomalías en milisegundos para ejecutar protocolos Kill-Safe que reducen drásticamente el riesgo operativo y protegen los activos financieros.</p>
+          <p class="text-base font-light leading-relaxed" style="color:rgba(193,241,251,0.72)">La fuga térmica es un proceso exotérmico <strong class="text-b5 font-medium">irreversible</strong> que puede derivar en incendios catastróficos y pérdida de vidas. Sentinel Corp implementa una capa de seguridad funcional basada en <strong class="text-b6 font-medium">IEC 61508 / ISO 26262</strong>, detectando anomalías en milisegundos para ejecutar protocolos Kill-Safe que reducen drásticamente el riesgo operativo.</p>
         </div>
       </div>
     </div>
@@ -275,8 +399,7 @@
       <h3 class="font-display text-3xl font-light text-a4" style="font-family:'Cormorant Garamond',serif">Pilares del <span class="font-semibold text-grad-tech">Sistema</span></h3>
     </div>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default transition-all duration-300 d1" style="border:1px solid rgba(255,255,255,0.05)">
+      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default d1" style="border:1px solid rgba(255,255,255,0.05)">
         <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(20,103,143,0.2)">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
         </div>
@@ -284,67 +407,201 @@
         <h3 class="font-display text-2xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Telemetría y Redundancia</h3>
         <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.45)">Lectura de temperatura en tiempo real mediante sensores de precisión TMP36. Arquitectura con redundancia sensorial que elimina puntos únicos de falla para garantizar lecturas fiables en condiciones críticas.</p>
       </div>
-
-      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default transition-all duration-300 d2" style="border:1px solid rgba(255,255,255,0.05)">
+      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default d2" style="border:1px solid rgba(255,255,255,0.05)">
         <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(84,182,133,0.12)">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         </div>
         <span class="inline-block px-3 py-1 rounded-full text-xs font-mono-custom mb-4" style="background:rgba(84,182,133,0.1);color:#54B685;border:1px solid rgba(84,182,133,0.2)">Actuadores</span>
         <h3 class="font-display text-2xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Mitigación Activa</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.45)">Control dinámico de actuadores de disipación: ventiladores de alto flujo, bombas de refrigeración líquida y servos. La respuesta escala automáticamente según la demanda térmica detectada por los sensores.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.45)">Control dinámico de actuadores de disipación: ventiladores de alto flujo, bombas de refrigeración líquida y servos. La respuesta escala automáticamente según la demanda térmica detectada.</p>
       </div>
-
-      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default transition-all duration-300 d3" style="border:1px solid rgba(255,255,255,0.05)">
+      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default d3" style="border:1px solid rgba(255,255,255,0.05)">
         <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(20,103,143,0.2)">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
         </div>
         <span class="inline-block px-3 py-1 rounded-full text-xs font-mono-custom mb-4" style="background:rgba(20,103,143,0.15);color:#1B98C4;border:1px solid rgba(20,103,143,0.25)">Interfaz</span>
         <h3 class="font-display text-2xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Interfaz de Alerta</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.45)">Sistema de aviso multimodal con señales visuales mediante LEDs de estado codificados por nivel de riesgo, complementado con buzzers industriales para notificación sonora inmediata al operador.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.45)">Sistema de aviso multimodal con LEDs codificados por nivel de riesgo y buzzers industriales para notificación sonora inmediata al operador.</p>
       </div>
-
-      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default transition-all duration-300 d1" style="border:1px solid rgba(255,255,255,0.05)">
+      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default d1" style="border:1px solid rgba(255,255,255,0.05)">
         <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(84,182,133,0.12)">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <span class="inline-block px-3 py-1 rounded-full text-xs font-mono-custom mb-4" style="background:rgba(84,182,133,0.1);color:#54B685;border:1px solid rgba(84,182,133,0.2)">Protocolo Crítico</span>
         <h3 class="font-display text-2xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Protocolo Kill-Safe</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.45)">Aislamiento físico inmediato mediante relé SPDT de alta capacidad. Desconecta la carga de forma segura ante condiciones de criticidad extrema, cortando la cadena de reacción exotérmica antes de que sea irreversible.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.45)">Aislamiento físico inmediato mediante relé SPDT de alta capacidad. Desconecta la carga de forma segura ante condiciones críticas, cortando la cadena exotérmica antes de que sea irreversible.</p>
       </div>
-
-      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default transition-all duration-300 d2" style="border:1px solid rgba(255,255,255,0.05)">
+      <div class="sol-card reveal glass rounded-2xl p-8 cursor-default d2" style="border:1px solid rgba(255,255,255,0.05)">
         <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(20,103,143,0.2)">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         </div>
         <span class="inline-block px-3 py-1 rounded-full text-xs font-mono-custom mb-4" style="background:rgba(20,103,143,0.15);color:#1B98C4;border:1px solid rgba(20,103,143,0.25)">Predictivo</span>
         <h3 class="font-display text-2xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Mantenimiento Predictivo</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.45)">Data logging continuo para registro histórico de temperatura y eventos del sistema. Permite analizar la degradación de celdas a largo plazo y anticipar fallas antes de que comprometan la operación.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.45)">Data logging continuo para análisis de degradación de celdas y anticipación de fallas antes de que comprometan la operación.</p>
       </div>
-
-      <!-- Arquitectura card -->
+      <!-- Stack tecnológico -->
       <div class="reveal rounded-2xl p-8 d3" style="background:linear-gradient(135deg,rgba(20,103,143,0.18),rgba(3,26,57,0.5));border:1px solid rgba(27,152,196,0.2)">
         <p class="text-xs font-mono-custom tracking-widest uppercase text-b6 mb-5">Stack Tecnológico</p>
         <div class="space-y-3">
-          <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-b3 shrink-0"></span><span class="text-sm font-light" style="color:rgba(193,241,251,0.7)">Arduino — Microcontrolador embebido</span></div>
+          <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-b3 shrink-0"></span><span class="text-sm font-light" style="color:rgba(193,241,251,0.7)">Arduino Uno R3 — Microcontrolador</span></div>
           <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-b6 shrink-0"></span><span class="text-sm font-light" style="color:rgba(193,241,251,0.7)">Sensores TMP36 con redundancia</span></div>
           <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-b3 shrink-0"></span><span class="text-sm font-light" style="color:rgba(193,241,251,0.7)">Relé SPDT de alta capacidad</span></div>
-          <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-b6 shrink-0"></span><span class="text-sm font-light" style="color:rgba(193,241,251,0.7)">LEDs de estado + Buzzers industriales</span></div>
+          <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-b6 shrink-0"></span><span class="text-sm font-light" style="color:rgba(193,241,251,0.7)">LCD 16×2 I2C + LEDs + Buzzers</span></div>
           <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-b3 shrink-0"></span><span class="text-sm font-light" style="color:rgba(193,241,251,0.7)">Ciclo cerrado de monitoreo continuo</span></div>
           <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-b6 shrink-0"></span><span class="text-sm font-light" style="color:rgba(193,241,251,0.7)">IEC 61508 / ISO 26262 compliant</span></div>
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="reveal text-center mt-16 d3">
-      <a href="#contact" class="inline-flex items-center gap-3 px-10 py-4 rounded-full text-white font-medium text-sm tracking-wider uppercase hover:scale-105 transition-all duration-300" style="background:linear-gradient(90deg,#14678F,#1B98C4)">
-        Solicitar Información del Proyecto
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </a>
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  ESPECIFICACIONES TÉCNICAS — nueva sección                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section id="specs" class="relative py-32 overflow-hidden" style="background:#0a1628">
+  <div class="absolute inset-0 grid-bg opacity-20"></div>
+  <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(27,152,196,0.3),transparent)"></div>
+  <div class="absolute top-1/3 right-0 w-96 h-96 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(27,152,196,0.07),transparent 70%)"></div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="reveal flex items-center gap-4 mb-8">
+      <span class="w-12 h-px bg-b6"></span>
+      <span class="text-xs font-mono-custom tracking-widest uppercase text-b6">Metrología del Sistema</span>
+    </div>
+    <h2 class="reveal font-display font-light leading-tight mb-4" style="font-family:'Cormorant Garamond',serif">
+      <span class="block text-5xl md:text-6xl text-a4">Especificaciones</span>
+      <span class="block text-5xl md:text-6xl font-semibold text-grad-tech">Técnicas</span>
+    </h2>
+    <p class="reveal text-lg font-light leading-relaxed max-w-2xl mb-16 d2" style="color:rgba(193,241,251,0.55)">Cada parámetro medible, documentado con unidades, rangos y tolerancias. La confiabilidad de un sistema de seguridad se demuestra con datos, no con promesas.</p>
+
+    <div class="grid lg:grid-cols-2 gap-8 mb-12">
+      <!-- Tabla de specs -->
+      <div class="reveal rounded-2xl overflow-hidden d1" style="border:1px solid rgba(27,152,196,0.2)">
+        <div class="px-6 py-4" style="background:rgba(27,152,196,0.12);border-bottom:1px solid rgba(27,152,196,0.15)">
+          <p class="text-xs font-mono-custom tracking-widest uppercase text-b6">Sensor TMP36 — Parámetros de Medición</p>
+        </div>
+        <div class="divide-y" style="background:rgba(3,26,57,0.5);border-color:rgba(27,152,196,0.08)">
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-b6 hover:bg-opacity-5 transition-colors">
+            <span class="text-sm font-light" style="color:rgba(193,241,251,0.55)">Rango de temperatura</span>
+            <span class="text-sm font-mono-custom text-b5">0°C — 150°C</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-b6 hover:bg-opacity-5 transition-colors">
+            <span class="text-sm font-light" style="color:rgba(193,241,251,0.55)">Resolución ADC (10-bit, 5V ref)</span>
+            <span class="text-sm font-mono-custom text-b5">≈ 0.48°C / bit</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-b6 hover:bg-opacity-5 transition-colors">
+            <span class="text-sm font-light" style="color:rgba(193,241,251,0.55)">Factor de conversión</span>
+            <span class="text-sm font-mono-custom text-b5">10 mV / °C</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-b6 hover:bg-opacity-5 transition-colors">
+            <span class="text-sm font-light" style="color:rgba(193,241,251,0.55)">Intervalo de muestreo</span>
+            <span class="text-sm font-mono-custom text-b5">100 ms</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-b6 hover:bg-opacity-5 transition-colors">
+            <span class="text-sm font-light" style="color:rgba(193,241,251,0.55)">Tiempo de detección de anomalía</span>
+            <span class="text-sm font-mono-custom text-b5">&lt; 5 ms</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-b6 hover:bg-opacity-5 transition-colors">
+            <span class="text-sm font-light" style="color:rgba(193,241,251,0.55)">Tensión de alimentación</span>
+            <span class="text-sm font-mono-custom text-b5">2.7V — 5.5V</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-b6 hover:bg-opacity-5 transition-colors">
+            <span class="text-sm font-light" style="color:rgba(193,241,251,0.55)">Pin de lectura</span>
+            <span class="text-sm font-mono-custom text-b5">A0 (analógico)</span>
+          </div>
+          <div class="flex items-center justify-between px-6 py-4 hover:bg-b6 hover:bg-opacity-5 transition-colors">
+            <span class="text-sm font-light" style="color:rgba(193,241,251,0.55)">Control PWM actuadores</span>
+            <span class="text-sm font-mono-custom text-b5">0 — 255 pasos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Umbrales de temperatura + simulador -->
+      <div class="reveal space-y-5 d2">
+        <!-- Umbrales -->
+        <div class="rounded-2xl p-6" style="background:rgba(3,26,57,0.5);border:1px solid rgba(27,152,196,0.2)">
+          <p class="text-xs font-mono-custom tracking-widest uppercase text-b6 mb-5">Umbrales Operativos</p>
+          <div class="space-y-5">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full" style="background:#54B685;box-shadow:0 0 6px rgba(84,182,133,0.7)"></span>
+                  <span class="text-sm font-mono-custom" style="color:#54B685">NORMAL</span>
+                </div>
+                <span class="text-sm font-mono-custom text-a4">&lt; 30°C</span>
+              </div>
+              <div class="spec-bar-track"><div class="spec-bar-fill spec-bar-normal" style="background:#54B685;width:0%"></div></div>
+              <p class="text-xs font-light mt-1.5" style="color:rgba(193,241,251,0.4)">Ventilador: PWM 60 · Bomba: PWM 40 · Flap: 0°</p>
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full" style="background:#f59e0b;box-shadow:0 0 6px rgba(245,158,11,0.7)"></span>
+                  <span class="text-sm font-mono-custom" style="color:#f59e0b">WARNING</span>
+                </div>
+                <span class="text-sm font-mono-custom text-a4">30°C — 40°C</span>
+              </div>
+              <div class="spec-bar-track"><div class="spec-bar-fill spec-bar-warning" style="background:#f59e0b;width:0%"></div></div>
+              <p class="text-xs font-light mt-1.5" style="color:rgba(193,241,251,0.4)">Actuadores escalan · Buzzer 800Hz · LED amarillo</p>
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full" style="background:#ef4444;box-shadow:0 0 6px rgba(239,68,68,0.7)"></span>
+                  <span class="text-sm font-mono-custom" style="color:#ef4444">CRITICAL</span>
+                </div>
+                <span class="text-sm font-mono-custom text-a4">&gt; 40°C</span>
+              </div>
+              <div class="spec-bar-track"><div class="spec-bar-fill spec-bar-critical" style="background:#ef4444;width:0%"></div></div>
+              <p class="text-xs font-light mt-1.5" style="color:rgba(193,241,251,0.4)">Kill-Safe activo · Relé abierto · Buzzer 1200Hz continuo</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulador interactivo -->
+        <div class="rounded-2xl p-6" style="background:rgba(3,26,57,0.5);border:1px solid rgba(27,152,196,0.2)">
+          <p class="text-xs font-mono-custom tracking-widest uppercase text-b6 mb-4">Simulador de Temperatura</p>
+          <p class="text-xs font-light mb-5" style="color:rgba(193,241,251,0.4)">Arrastra para simular temperatura y ver la respuesta del sistema</p>
+          <div class="flex items-center gap-4 mb-4">
+            <input type="range" id="temp-sim" min="0" max="70" value="22" class="flex-1">
+            <div class="font-mono-custom text-2xl font-semibold text-a4 w-20 text-right" id="temp-val">22°C</div>
+          </div>
+          <div id="sim-status" class="rounded-xl p-4 transition-all duration-500" style="background:rgba(84,182,133,0.1);border:1px solid rgba(84,182,133,0.3)">
+            <div class="flex items-center gap-3 mb-2">
+              <span id="sim-dot" class="w-3 h-3 rounded-full pulse-glow" style="background:#54B685"></span>
+              <span id="sim-label" class="text-sm font-mono-custom tracking-wider" style="color:#54B685">NORMAL — Sistema estable</span>
+            </div>
+            <p id="sim-desc" class="text-xs font-light" style="color:rgba(193,241,251,0.5)">Ventilador a PWM 60 · Bomba a PWM 40 · Flap cerrado · LED verde</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila de stats rápidos -->
+    <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-4 d3">
+      <div class="glass rounded-xl p-5 text-center">
+        <p class="font-display text-3xl font-semibold text-b5 mb-1" style="font-family:'Cormorant Garamond',serif">100ms</p>
+        <p class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.4)">Ciclo de muestreo</p>
+      </div>
+      <div class="glass rounded-xl p-5 text-center">
+        <p class="font-display text-3xl font-semibold text-b5 mb-1" style="font-family:'Cormorant Garamond',serif">0x20</p>
+        <p class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.4)">Dirección I2C LCD</p>
+      </div>
+      <div class="glass rounded-xl p-5 text-center">
+        <p class="font-display text-3xl font-semibold text-b5 mb-1" style="font-family:'Cormorant Garamond',serif">1kΩ</p>
+        <p class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.4)">Resistencia base NPN</p>
+      </div>
+      <div class="glass rounded-xl p-5 text-center">
+        <p class="font-display text-3xl font-semibold text-b5 mb-1" style="font-family:'Cormorant Garamond',serif">110°</p>
+        <p class="text-xs font-mono-custom" style="color:rgba(193,241,251,0.4)">Apertura máx. flap</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- CIRCUITO REAL -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  CIRCUITO REAL — CTA prominente                            -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <section id="circuito" class="relative py-32 overflow-hidden" style="background:#1F292B">
   <div class="absolute inset-0 grid-bg opacity-20"></div>
   <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(27,152,196,0.3),transparent)"></div>
@@ -357,8 +614,7 @@
     </div>
 
     <div class="grid lg:grid-cols-2 gap-16 items-center">
-
-      <!-- Text side -->
+      <!-- Text -->
       <div class="reveal-left">
         <h2 class="font-display font-light leading-tight mb-6" style="font-family:'Cormorant Garamond',serif">
           <span class="block text-5xl md:text-6xl text-a4">El Circuito</span>
@@ -372,7 +628,7 @@
           <p>El prototipo físico del EV Guardian implementa todos los subsistemas de protección sobre una arquitectura Arduino Uno R3, conectando sensórica de precisión, actuadores de disipación y protocolo Kill-Safe en un único circuito integrado.</p>
           <p>Cada componente fue seleccionado y validado bajo los mismos criterios de seguridad funcional que rigen el diseño embebido de nivel industrial.</p>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-4 mb-10">
           <div class="glass rounded-xl p-4">
             <p class="text-xs font-mono-custom tracking-wider uppercase text-b6 mb-1">Componentes</p>
             <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">15+</p>
@@ -383,51 +639,61 @@
             <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">38</p>
             <p class="text-xs font-light" style="color:rgba(193,241,251,0.4)">Cables documentados</p>
           </div>
-          <div class="glass rounded-xl p-4">
-            <p class="text-xs font-mono-custom tracking-wider uppercase text-b6 mb-1">Protocolo</p>
-            <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">Kill-Safe</p>
-            <p class="text-xs font-light" style="color:rgba(193,241,251,0.4)">Corte automático</p>
+        </div>
+
+        <!-- CTA PROMINENTE -->
+        <div class="circuit-hero-card p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-3 h-3 rounded-full pulse-glow" style="background:#54B685"></span>
+            <span class="text-xs font-mono-custom tracking-widest uppercase text-b5">10 componentes documentados · Hotspots interactivos</span>
           </div>
-          <div class="glass rounded-xl p-4">
-            <p class="text-xs font-mono-custom tracking-wider uppercase text-b6 mb-1">Plataforma</p>
-            <p class="font-display text-2xl font-semibold text-a4" style="font-family:'Cormorant Garamond',serif">Tinkercad</p>
-            <p class="text-xs font-light" style="color:rgba(193,241,251,0.4)">Simulado y validado</p>
-          </div>
+          <p class="text-base font-light mb-5" style="color:rgba(193,241,251,0.7)">Explora el circuito real en detalle — haz clic en cada componente para ver su función, pines y rol en el sistema de protección térmica.</p>
+          <button onclick="navigateTo('circuito.html')" class="circuit-cta-btn w-full flex items-center justify-center gap-4 px-8 py-5 text-white font-medium tracking-wider uppercase">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v3M11 14h.01"/></svg>
+            <span class="text-base">Explorar el Circuito en Vivo</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+          <p class="text-center text-xs font-mono-custom mt-3" style="color:rgba(193,241,251,0.3)">Vista interactiva · Tinkercad v2.0 · Arduino Uno R3</p>
         </div>
       </div>
 
-      <!-- Image side -->
+      <!-- Image -->
       <div class="reveal-right">
         <div class="relative">
           <div class="absolute -inset-4 rounded-2xl" style="border:1px solid rgba(27,152,196,0.15)"></div>
           <div class="absolute -inset-8 rounded-3xl" style="border:1px solid rgba(20,103,143,0.08)"></div>
           <div class="relative rounded-xl overflow-hidden" style="border:1px solid rgba(27,152,196,0.2)">
-            <img 
-              src="pics/look into real life ciruit .png" 
-              alt="EV Guardian — Circuito Real" 
-              class="w-full h-full object-cover"
-              onerror="this.parentElement.style.background='#031A39';this.style.display='none'"
-            >
-            <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(to top,rgba(3,26,57,0.6),transparent 60%)"></div>
+            <img src="pics/look into real life ciruit .png" alt="EV Guardian — Circuito Real" class="w-full h-full object-cover"
+              onerror="this.parentElement.style.background='#031A39';this.style.display='none'">
+            <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(to top,rgba(3,26,57,0.7),transparent 50%)"></div>
+            <!-- Overlay CTA secundario sobre la imagen -->
+            <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300" style="background:rgba(3,26,57,0.6);backdrop-filter:blur(2px)">
+              <button onclick="navigateTo('circuito.html')" class="circuit-cta-btn flex items-center gap-3 px-8 py-4 text-white font-medium text-sm tracking-wider uppercase">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                Explorar en Vivo
+              </button>
+            </div>
             <div class="absolute bottom-4 left-4 right-4">
-  <div class="glass rounded-xl px-4 py-3 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <span class="w-2 h-2 rounded-full bg-b3 pulse-glow shrink-0"></span>
-      <span class="text-xs font-mono-custom tracking-wider uppercase text-b5">EV Guardian — Prototipo Tinkercad v2.0</span>
-    </div>
-    <a href="circuito.html" class="flex items-center gap-2 px-4 py-2 rounded-full text-white text-xs font-mono-custom tracking-wider uppercase hover:scale-105 transition-all duration-300" style="background:linear-gradient(90deg,#14678F,#1B98C4)">
-      Explorar
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-    </a>
-  </div>
-</div>
+              <div class="glass rounded-xl px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="w-2 h-2 rounded-full bg-b3 pulse-glow shrink-0"></span>
+                  <span class="text-xs font-mono-custom tracking-wider uppercase text-b5">EV Guardian — Tinkercad v2.0</span>
+                </div>
+                <button onclick="navigateTo('circuito.html')" class="flex items-center gap-2 px-4 py-2 rounded-full text-white text-xs font-mono-custom tracking-wider uppercase hover:scale-105 transition-all duration-300" style="background:linear-gradient(90deg,#14678F,#1B98C4)">
+                  Ver Circuito →
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-<!-- METODOLOGÍA -->
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  METODOLOGÍA                                               -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <section id="methodology" class="relative py-32 overflow-hidden" style="background:#1F292B">
   <div class="absolute inset-0 grid-bg opacity-12"></div>
   <div class="absolute top-1/2 left-0 w-80 h-80 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(27,152,196,0.05),transparent 70%)"></div>
@@ -449,37 +715,36 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         </div>
         <h3 class="font-display text-xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Centralización Notion AI</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.5)">Notion AI como núcleo de la organización empresarial: documentación técnica y administrativa concisa, accesible y siempre actualizada para todo el equipo en tiempo real.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.5)">Notion AI como núcleo de la organización: documentación técnica y administrativa concisa, accesible y actualizada para el equipo en tiempo real.</p>
       </div>
-
       <div class="method-card reveal glass rounded-2xl p-7 cursor-default d2" style="border:1px solid rgba(255,255,255,0.05)">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(84,182,133,0.12)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
         <h3 class="font-display text-xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Gestión de Equipos</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.5)">Reuniones semanales y flujos de trabajo colaborativos integrados en tablas dinámicas de Notion. Coordinación ágil que mantiene a los tres fundadores sincronizados en cada fase del proyecto.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.5)">Reuniones semanales y flujos de trabajo colaborativos en tablas dinámicas de Notion. Coordinación ágil entre los fundadores en cada fase del proyecto.</p>
       </div>
-
       <div class="method-card reveal glass rounded-2xl p-7 cursor-default d3" style="border:1px solid rgba(255,255,255,0.05)">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(27,152,196,0.15)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
         <h3 class="font-display text-xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Monitoreo de KPIs</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.5)">Seguimiento automatizado de estadísticas de progreso y milestones del proyecto. Garantiza que el desarrollo permanezca dentro del cronograma y presupuesto establecidos desde el inicio.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.5)">Seguimiento automatizado de milestones y estadísticas del proyecto. El desarrollo permanece dentro del cronograma y presupuesto establecidos.</p>
       </div>
-
       <div class="method-card reveal glass rounded-2xl p-7 cursor-default d4" style="border:1px solid rgba(255,255,255,0.05)">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(84,182,133,0.12)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#54B685" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         </div>
         <h3 class="font-display text-xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Gobernanza de Datos</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.5)">Sincronización entre reportes de simulaciones y el sistema de gestión para toma de decisiones basada en los datos más fiables y actualizados posibles en cada etapa del desarrollo.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(193,241,251,0.5)">Sincronización entre reportes de simulaciones y el sistema de gestión para toma de decisiones basada en datos fiables en cada etapa del desarrollo.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ESPECIALIZACIÓN -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  ESPECIALIZACIÓN                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <section id="sustainability" class="relative py-32 overflow-hidden">
   <div class="absolute inset-0" style="background:linear-gradient(135deg,#133720 0%,#2E393F 50%,#33713F 100%)"></div>
   <div class="absolute inset-0 opacity-20" style="background:radial-gradient(circle at 20% 80%,#3DA04B,transparent 50%),radial-gradient(circle at 80% 20%,#33713F,transparent 50%)"></div>
@@ -510,9 +775,8 @@
           <span class="text-xs font-mono-custom tracking-wider" style="color:#3DA04B">Electromovilidad EV</span>
         </div>
         <h3 class="font-display text-2xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Vehículos Eléctricos</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(201,236,206,0.6)">Sistemas de protección térmica activa para racks y paquetes de baterías en vehículos eléctricos de alto rendimiento. Monitoreo de celdas en tiempo real con respuesta autónoma ante eventos críticos de temperatura.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(201,236,206,0.6)">Sistemas de protección térmica activa para racks y paquetes de baterías en vehículos eléctricos de alto rendimiento. Monitoreo de celdas en tiempo real con respuesta autónoma.</p>
       </div>
-
       <div class="sus-card reveal rounded-2xl p-8 cursor-default d2" style="background:rgba(19,55,32,0.45);backdrop-filter:blur(12px);border:1px solid rgba(201,236,206,0.1)">
         <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6" style="background:rgba(61,160,75,0.2)">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3DA04B" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -521,9 +785,8 @@
           <span class="text-xs font-mono-custom tracking-wider" style="color:#3DA04B">Energías Renovables</span>
         </div>
         <h3 class="font-display text-2xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Sistemas BESS</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(201,236,206,0.6)">Seguridad funcional en sistemas de almacenamiento BESS (Battery Energy Storage Systems) para plantas solares y eólicas. Protección de la inversión y continuidad del suministro energético ante eventos térmicos.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(201,236,206,0.6)">Seguridad funcional en sistemas de almacenamiento BESS para plantas solares y eólicas. Protección de la inversión y continuidad del suministro energético ante eventos térmicos.</p>
       </div>
-
       <div class="sus-card reveal rounded-2xl p-8 cursor-default d3" style="background:rgba(19,55,32,0.45);backdrop-filter:blur(12px);border:1px solid rgba(201,236,206,0.1)">
         <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6" style="background:rgba(61,160,75,0.2)">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3DA04B" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
@@ -532,11 +795,10 @@
           <span class="text-xs font-mono-custom tracking-wider" style="color:#3DA04B">Industria 4.0</span>
         </div>
         <h3 class="font-display text-2xl font-medium text-a4 mb-3" style="font-family:'Cormorant Garamond',serif">Seguridad Industrial</h3>
-        <p class="text-sm font-light leading-relaxed" style="color:rgba(201,236,206,0.6)">Monitoreo y diagnóstico de activos críticos en tiempo real mediante redes de sensores inteligentes. Detección temprana de anomalías térmicas para reducir tiempos de inactividad no planificada en plantas industriales.</p>
+        <p class="text-sm font-light leading-relaxed" style="color:rgba(201,236,206,0.6)">Monitoreo y diagnóstico de activos críticos mediante redes de sensores inteligentes. Detección temprana de anomalías térmicas para reducir tiempos de inactividad no planificada.</p>
       </div>
     </div>
 
-    <!-- Estándares -->
     <div class="reveal text-center">
       <div class="inline-block rounded-2xl p-8 max-w-lg" style="background:rgba(19,55,32,0.55);backdrop-filter:blur(16px);border:1px solid rgba(61,160,75,0.2)">
         <svg class="mx-auto mb-4" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3DA04B" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -552,10 +814,11 @@
   </div>
 </section>
 
-<!-- FOOTER / CONTACTO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  FOOTER / CONTACTO                                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <footer id="contact" style="background:#031A39">
   <div class="h-px" style="background:linear-gradient(90deg,transparent,rgba(27,152,196,0.4),transparent)"></div>
-
   <div class="relative py-20 overflow-hidden">
     <div class="absolute inset-0 grid-bg opacity-15"></div>
     <div class="max-w-7xl mx-auto px-6 relative z-10">
@@ -579,11 +842,9 @@
       </div>
     </div>
   </div>
-
   <div class="h-px" style="background:linear-gradient(90deg,transparent,rgba(20,103,143,0.2),transparent)"></div>
-
   <div class="max-w-7xl mx-auto px-6 py-16">
-    <div class="grid grid-cols-2 md:grid-cols-6 gap-10">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-10">
       <div class="col-span-2">
         <div class="flex items-center gap-3 mb-5">
           <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center" style="background:rgba(27,152,196,0.1);border:1px solid rgba(27,152,196,0.2)">
@@ -600,24 +861,14 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.6 3.38 2 2 0 0 1 3.57 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.54a16 16 0 0 0 5.55 5.55l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16z"/></svg>
           +507 6583-0384
         </div>
-        <div class="flex gap-3">
-          <a href="#" class="w-8 h-8 rounded-lg glass flex items-center justify-center transition-colors hover:bg-blue-900 hover:bg-opacity-30" style="color:rgba(193,241,251,0.4)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-          <a href="#" class="w-8 h-8 rounded-lg glass flex items-center justify-center transition-colors hover:bg-blue-900 hover:bg-opacity-30" style="color:rgba(193,241,251,0.4)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
-          </a>
-        </div>
       </div>
-
       <div>
         <p class="text-xs font-mono-custom tracking-widest uppercase text-b6 mb-5">Proyecto</p>
         <ul class="space-y-3">
           <li><a href="#solutions" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">EV Thermal Guardian</a></li>
           <li><a href="#solutions" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Protocolo Kill-Safe</a></li>
-          <li><a href="#solutions" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Telemetría TMP36</a></li>
-          <li><a href="#solutions" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Mitigación Activa</a></li>
-          <li><a href="#solutions" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Data Logging</a></li>
+          <li><a href="#specs" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Especificaciones</a></li>
+          <li><button onclick="navigateTo('circuito.html')" class="text-sm font-light hover:text-b5 transition-colors text-left" style="color:rgba(193,241,251,0.4)">Circuito Interactivo</button></li>
         </ul>
       </div>
       <div>
@@ -627,34 +878,20 @@
           <li><a href="#about" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Equipo Fundador</a></li>
           <li><a href="#methodology" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Metodología</a></li>
           <li><a href="#sustainability" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Especialización</a></li>
-          <li><a href="#contact" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Contacto</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="text-xs font-mono-custom tracking-widest uppercase text-b6 mb-5">Sectores</p>
-        <ul class="space-y-3">
-          <li><a href="#sustainability" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Electromovilidad EV</a></li>
-          <li><a href="#sustainability" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Energías Renovables</a></li>
-          <li><a href="#sustainability" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Sistemas BESS</a></li>
-          <li><a href="#sustainability" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Industria 4.0</a></li>
-          <li><a href="#sustainability" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Seguridad Industrial</a></li>
         </ul>
       </div>
       <div>
         <p class="text-xs font-mono-custom tracking-widest uppercase text-b6 mb-5">Estándares</p>
         <ul class="space-y-3">
-          <li><a href="#" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">IEC 61508</a></li>
-          <li><a href="#" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">ISO 26262</a></li>
-          <li><a href="#methodology" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Notion AI Docs</a></li>
-          <li><a href="#methodology" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Gobernanza de Datos</a></li>
-          <li><a href="#solutions" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Ciclo Cerrado</a></li>
+          <li><a href="#specs" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">IEC 61508</a></li>
+          <li><a href="#specs" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">ISO 26262</a></li>
+          <li><a href="#sustainability" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Electromovilidad EV</a></li>
+          <li><a href="#sustainability" class="text-sm font-light hover:text-b5 transition-colors" style="color:rgba(193,241,251,0.4)">Sistemas BESS</a></li>
         </ul>
       </div>
     </div>
   </div>
-
   <div class="h-px" style="background:linear-gradient(90deg,transparent,rgba(193,241,251,0.08),transparent)"></div>
-
   <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-2 text-xs font-mono-custom" style="color:rgba(193,241,251,0.25)">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -670,55 +907,130 @@
   </div>
 </footer>
 
+<!-- BACK TO TOP -->
+<button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full glass flex items-center justify-center hover:scale-110 transition-all duration-300 group" style="border:1px solid rgba(27,152,196,0.3);background:rgba(20,103,143,0.2);backdrop-filter:blur(12px)">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2" class="group-hover:stroke-b5 transition-colors"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  JAVASCRIPT                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <script>
-  const header = document.getElementById('header');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 40) {
-      header.style.background = 'rgba(31,41,43,0.78)';
-      header.style.backdropFilter = 'blur(16px)';
-      header.style.webkitBackdropFilter = 'blur(16px)';
-      header.style.borderBottom = '1px solid rgba(255,255,255,0.07)';
-      header.style.paddingTop = '12px';
-      header.style.paddingBottom = '12px';
-    } else {
-      header.style.background = 'transparent';
-      header.style.backdropFilter = 'none';
-      header.style.webkitBackdropFilter = 'none';
-      header.style.borderBottom = 'none';
-      header.style.paddingTop = '20px';
-      header.style.paddingBottom = '20px';
-    }
-  });
-
-  function toggleMenu() {
-    document.getElementById('mobile-menu').classList.toggle('open');
-  }
-
-  window.addEventListener('load', () => {
+/* ── INTRO SCREEN ──────────────────────────────────────────── */
+window.addEventListener('load', () => {
+  // Animate hero elements after intro
+  setTimeout(() => {
+    document.getElementById('intro-screen').classList.add('hidden-out');
     document.querySelectorAll('.hero-el').forEach((el, i) => {
       el.style.opacity = '0';
       el.style.transform = 'translateY(30px)';
       el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
       setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 200 + i * 160);
     });
-  });
+  }, 2000);
+});
 
-  const observer = new IntersectionObserver(
-    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-    { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-  );
-  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+/* ── PAGE TRANSITION ───────────────────────────────────────── */
+function navigateTo(url) {
+  const overlay = document.getElementById('page-out');
+  overlay.classList.add('active');
+  setTimeout(() => { window.location.href = url; }, 380);
+}
+
+/* ── HEADER SCROLL ─────────────────────────────────────────── */
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 40) {
+    header.style.background = 'rgba(31,41,43,0.85)';
+    header.style.backdropFilter = 'blur(16px)';
+    header.style.webkitBackdropFilter = 'blur(16px)';
+    header.style.borderBottom = '1px solid rgba(255,255,255,0.07)';
+    header.style.paddingTop = '12px';
+    header.style.paddingBottom = '12px';
+  } else {
+    header.style.background = 'transparent';
+    header.style.backdropFilter = 'none';
+    header.style.webkitBackdropFilter = 'none';
+    header.style.borderBottom = 'none';
+    header.style.paddingTop = '20px';
+    header.style.paddingBottom = '20px';
+  }
+});
+
+/* ── MOBILE MENU ───────────────────────────────────────────── */
+function toggleMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+
+/* ── SCROLL REVEAL ─────────────────────────────────────────── */
+const observer = new IntersectionObserver(
+  entries => entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Animate spec bars when specs section visible
+      if (e.target.closest('#specs')) animateBars();
+    }
+  }),
+  { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
+);
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+/* ── SPEC BARS ─────────────────────────────────────────────── */
+let barsAnimated = false;
+function animateBars() {
+  if (barsAnimated) return;
+  barsAnimated = true;
+  setTimeout(() => {
+    document.querySelector('.spec-bar-normal')?.style.setProperty('width', '45%');
+    setTimeout(() => document.querySelector('.spec-bar-warning')?.style.setProperty('width', '66%'), 150);
+    setTimeout(() => document.querySelector('.spec-bar-critical')?.style.setProperty('width', '100%'), 300);
+  }, 300);
+}
+
+/* ── TEMPERATURE SIMULATOR ─────────────────────────────────── */
+const tempSlider = document.getElementById('temp-sim');
+const tempVal = document.getElementById('temp-val');
+const simStatus = document.getElementById('sim-status');
+const simDot = document.getElementById('sim-dot');
+const simLabel = document.getElementById('sim-label');
+const simDesc = document.getElementById('sim-desc');
+
+function updateSimulator(val) {
+  tempVal.textContent = val + '°C';
+  if (val < 30) {
+    tempSlider.className = '';
+    simStatus.style.background = 'rgba(84,182,133,0.1)';
+    simStatus.style.borderColor = 'rgba(84,182,133,0.3)';
+    simDot.style.background = '#54B685';
+    simDot.style.boxShadow = '0 0 8px rgba(84,182,133,0.8)';
+    simLabel.style.color = '#54B685';
+    simLabel.textContent = 'NORMAL — Sistema estable';
+    simDesc.textContent = 'Ventilador a PWM 60 · Bomba a PWM 40 · Flap cerrado 0° · LED verde ON';
+  } else if (val < 40) {
+    tempSlider.className = 'warning';
+    simStatus.style.background = 'rgba(245,158,11,0.1)';
+    simStatus.style.borderColor = 'rgba(245,158,11,0.3)';
+    simDot.style.background = '#f59e0b';
+    simDot.style.boxShadow = '0 0 8px rgba(245,158,11,0.8)';
+    simLabel.style.color = '#f59e0b';
+    simLabel.textContent = 'WARNING — Enfriamiento activo';
+    const pwm = Math.round(60 + ((val-30)/10)*195);
+    const deg = Math.round((val-30)/10*90);
+    simDesc.textContent = `Ventilador PWM ${pwm} · Flap ${deg}° · Buzzer 800Hz · LED amarillo`;
+  } else {
+    tempSlider.className = 'critical';
+    simStatus.style.background = 'rgba(239,68,68,0.1)';
+    simStatus.style.borderColor = 'rgba(239,68,68,0.3)';
+    simDot.style.background = '#ef4444';
+    simDot.style.boxShadow = '0 0 8px rgba(239,68,68,0.8)';
+    simLabel.style.color = '#ef4444';
+    simLabel.textContent = 'CRITICAL — Kill-Safe activado';
+    simDesc.textContent = 'Relé SPDT abierto · Batería desconectada · Buzzer 1200Hz · LED rojo parpadeante';
+  }
+}
+
+tempSlider.addEventListener('input', e => updateSimulator(parseInt(e.target.value)));
+updateSimulator(22);
 </script>
-<!-- BACK TO TOP -->
-<button 
-  onclick="window.scrollTo({top:0,behavior:'smooth'})" 
-  class="fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full glass flex items-center justify-center hover:scale-110 transition-all duration-300 group"
-  style="border:1px solid rgba(27,152,196,0.3);background:rgba(20,103,143,0.2);backdrop-filter:blur(12px)"
->
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B98C4" stroke-width="2" class="group-hover:stroke-b5 transition-colors">
-    <path d="M12 19V5M5 12l7-7 7 7"/>
-  </svg>
-</button>
-
 </body>
 </html>
